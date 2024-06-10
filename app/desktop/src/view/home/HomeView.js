@@ -14,7 +14,7 @@ Ext.define('MyExtGenApp.view.home.HomeView', {
 	items: [{
 		xtype: 'formpanel',
 		title: 'Авторизация',
-		itemId: 'loginForm', // Add itemId for reference
+		itemId: 'loginForm',
 		width: 400,
 		bodyPadding: 20,
 		defaults: {
@@ -39,7 +39,7 @@ Ext.define('MyExtGenApp.view.home.HomeView', {
 		buttons: [{
 			text: 'Войти',
 			formBind: true,
-			handler: 'onLoginClick' // Ensure the handler is properly specified
+			handler: 'onLoginClick'
 		}]
 	}]
 });

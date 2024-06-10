@@ -12,7 +12,6 @@ Ext.define('MyExtGenApp.view.main.MainViewController', {
 		this.redirectTo('homeview');
 	},
 	showItemDetails: function(grid, td, cellIndex, record, tr, rowIndex, e, eOpts) {
-		debugger
 
 	}
 });

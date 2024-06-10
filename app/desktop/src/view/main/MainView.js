@@ -1,10 +1,8 @@
+
 Ext.define('MyExtGenApp.view.main.MainView', {
     extend: 'Ext.Panel',
     xtype: 'mainview',
     controller: 'mainviewcontroller',
-    // viewModel: { type: 'homeviewmodel' },
-
-    // scrollable: true,
 
 
     requires: [
@@ -12,11 +10,9 @@ Ext.define('MyExtGenApp.view.main.MainView', {
         'MyExtGenApp.view.main.MainView',
         'Ext.TitleBar',
         'Ext.Button',
-
-        // 'Ext.layout.container.HBox'
     ],
 
-    layout: 'vbox', // Vertical Box layout for main container
+    layout: 'vbox',
     items: [
         {
             xtype: 'titlebar',
@@ -31,7 +27,7 @@ Ext.define('MyExtGenApp.view.main.MainView', {
                     xtype: 'button',
                     text: 'Товары',
                     handler: function () {
-                        var tabPanel = this.up('mainview').down('#mainTabPanel'); // Reference to the tab panel
+                        var tabPanel = this.up('mainview').down('#mainTabPanel');
 
                         let panel = new Ext.panel.Panel({
                             title: 'Товары',
@@ -49,11 +45,11 @@ Ext.define('MyExtGenApp.view.main.MainView', {
                                     items: [
                                         {
                                             xtype: 'textfield',
-                                            label: 'Filter by Id:',
+                                            label: 'ID:',
                                             layout: 'fit',
                                             width: 300,
                                             listeners: {
-                                                change: function (field, newValue, oldValue) {
+                                                change: function (field, newValue) {
                                                     var grid = field.up('container').up('container').down('grid'),
                                                         store = grid.getStore();
                                                     store.clearFilter();
@@ -69,7 +65,7 @@ Ext.define('MyExtGenApp.view.main.MainView', {
                                         },
                                         {
                                             xtype: 'textfield',
-                                            label: 'Filter by Description:',
+                                            label: 'Описание:',
                                             width: 300,
                                             listeners: {
                                                 change: function (field, newValue, oldValue) {
@@ -99,26 +95,35 @@ Ext.define('MyExtGenApp.view.main.MainView', {
                                             dataIndex: 'id'
                                         },
                                         {
-                                            text: 'Name',
+                                            text: 'Имя',
                                             dataIndex: 'name',
                                             type: 'str',
                                             flex: 1
                                         },
                                         {
-                                            text: 'Description',
+                                            text: 'Описание',
                                             dataIndex: 'description',
                                             type: 'str',
                                             flex: 2
                                         },
                                         {
-                                            text: 'Price',
+                                            text: 'Цена',
                                             type: 'float',
                                             dataIndex: 'price'
                                         },
                                         {
-                                            text: 'Quantity',
+                                            text: 'Кол-во',
                                             type: 'int',
-                                            dataIndex: 'quantity'
+                                            dataIndex: 'quantity',
+                                            tdCls: 'test',
+                                            renderer : function(value, meta, e, e1) {
+                                                if(value === 0) {
+                                                    e1.setStyle('background-color:red')
+                                                } else {
+                                                    e1.setStyle('background-color:white')
+                                                }
+                                                return value;
+                                            },
                                         }
                                     ],
                                     store: {
@@ -126,24 +131,24 @@ Ext.define('MyExtGenApp.view.main.MainView', {
                                         data: [
                                             {
                                                 id: 1,
-                                                name: 'Product 1',
-                                                description: 'Description 1',
-                                                price: 10.2,
+                                                name: 'Продукт 1',
+                                                description: 'Синий',
+                                                price: 10,
                                                 quantity: 100
                                             },
                                             {
                                                 id: 2,
-                                                name: 'Product 2',
-                                                description: 'Description 2',
+                                                name: 'Продукт 2',
+                                                description: 'Желтый',
                                                 price: 20,
                                                 quantity: 200
                                             },
                                             {
                                                 id: 3,
-                                                name: 'Product 3',
-                                                description: 'Description 3',
+                                                name: 'Продукт 3',
+                                                description: 'Красный',
                                                 price: 30,
-                                                quantity: 300
+                                                quantity: 0
                                             }
                                         ]
                                     }
@@ -151,9 +156,11 @@ Ext.define('MyExtGenApp.view.main.MainView', {
                             ]
                         });
 
+                        debugger
+
                         panel.addListener({
                             click: {
-                                element: 'element', //bind to the underlying el property on the panel
+                                element: 'element',
                                 fn: function (e, t) {
                                     let rowIndex = t.closest('.x-gridrow')?.getAttribute('data-recordindex');
 
@@ -169,47 +176,57 @@ Ext.define('MyExtGenApp.view.main.MainView', {
 
                                         var formPanel = Ext.create('Ext.form.Panel', {
                                             itemId: 'currentForm',
-                                            title: 'Карточка товара: ', // Set the title of the form panel
-                                            items: [{
+                                            title: 'Карточка товара: ',
+                                            extend: 'Ext.form.Panel',
+                                            xtype: 'form-panel',
+                                            items: [
+                                                {
+                                                    label:'ID',
+                                                    xtype: 'textfield',
+                                                    name: 'id',
+                                                    readOnly: true,
+                                                    value: record.get('id')
+                                                },
+
+                                                {label: 'Имя',
                                                 xtype: 'textfield',
-                                                fieldLabel: 'Name',
                                                 name: 'name',
-                                                value: record.get('name') // Set the initial value of the textfield to the name
-                                            }, {
+                                                readOnly: true,
+                                                value: record.get('name')
+                                                }, {label: 'Описание',
                                                 xtype: 'textfield',
-                                                fieldLabel: 'Description',
                                                 name: 'description',
-                                                value: record.get('description') // Set the initial value of the textfield to the description
-                                            }, {
+                                                readOnly: true,
+                                                value: record.get('description')
+                                                }, {label: 'Цена',
                                                 xtype: 'numberfield',
-                                                fieldLabel: 'Price',
                                                 name: 'price',
-                                                value: record.get('price') // Set the initial value of the numberfield to the price
-                                            }, {
+                                                value: record.get('price')
+                                                }, {label: 'Кол-во',
                                                 xtype: 'numberfield',
-                                                fieldLabel: 'Quantity',
                                                 name: 'quantity',
-                                                value: record.get('quantity') // Set the initial value of the numberfield to the quantity
+                                                value: record.get('quantity')
                                             }],
                                             buttons: [
                                                 {
-                                                    text: 'Update',
+                                                    text: 'Сохранить',
                                                     handler: function (context) {
-
                                                         var form = context.up('#currentForm');
                                                         if (form.isValid()) {
-
                                                             var values = form.getValues();
 
-                                                            record.set(values);
-
-
+                                                            if(values.price >= 0 &&
+                                                                values.quantity >= 0 &&
+                                                                Number.isInteger(values.quantity)) {
+                                                                record.set(values);
+                                                            }
                                                             popup.close();
                                                         }
+
                                                     }
                                                 },
                                                 {
-                                                    text: 'Cancel',
+                                                    text: 'Отмена',
                                                     handler: function () {
                                                         popup.close();
 
@@ -221,9 +238,9 @@ Ext.define('MyExtGenApp.view.main.MainView', {
 
 
                                         var popup = Ext.create('Ext.window.Window', {
-                                            width: 600,
-                                            height: 300,
-                                            modal: true, // Make the popup modal
+                                            width: 700,
+                                            height: 500,
+                                            modal: true,
                                             items: [formPanel]
                                         });
                                         popup.show();
@@ -240,7 +257,8 @@ Ext.define('MyExtGenApp.view.main.MainView', {
                     },
                 }, {
                     xtype: 'button',
-                    text: 'Exit',
+                    text: 'Выход',
+
                     handler: function () {
                         localStorage.removeItem('authenticated');
                         Ext.Viewport.setActiveItem({xtype: 'homeview'});

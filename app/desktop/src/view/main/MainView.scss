@@ -7,3 +7,7 @@
   border: 1px solid lightgray;
   box-shadow: 2px 2px 8px 0 rgba(0, 0, 0, 0.4);
 }
+
+.x-tab.x-active .x-active-indicator-el {
+  background: white;
+}
